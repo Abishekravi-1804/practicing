@@ -1,7 +1,7 @@
 # main.tf
 
 provider "aws" {
-  region = "ap-south-1"
+  region = "ap-south-1" # <-- Changed from us-east-1
 }
 
 resource "aws_s3_bucket" "website_bucket" {
@@ -18,7 +18,6 @@ resource "aws_s3_bucket_public_access_block" "website_bucket_pab" {
   restrict_public_buckets = false
 }
 
-# This new resource replaces the deprecated "website" block
 resource "aws_s3_bucket_website_configuration" "website_config" {
   bucket = aws_s3_bucket.website_bucket.id
 
@@ -42,12 +41,14 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
     ]
   })
 
-  
   depends_on = [aws_s3_bucket_public_access_block.website_bucket_pab]
 }
-
 
 output "website_url" {
   value = aws_s3_bucket_website_configuration.website_config.website_endpoint
 }
 
+output "bucket_name" {
+  description = "The name of the S3 bucket."
+  value       = aws_s3_bucket.website_bucket.id
+}
