@@ -42,12 +42,11 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
     ]
   })
 
-  # This is the crucial fix: It tells Terraform to wait for the public access block
-  # to be configured before trying to apply this policy.
+  
   depends_on = [aws_s3_bucket_public_access_block.website_bucket_pab]
 }
 
-# This output is updated to use the new website configuration resource
+
 output "website_url" {
   value = aws_s3_bucket_website_configuration.website_config.website_endpoint
 }
