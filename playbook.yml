@@ -1,0 +1,13 @@
+
+---
+- name: Configure deployment server
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: Ensure AWS CLI is present (Example Task)
+      command: aws --version
+      register: aws_cli_check
+      changed_when: false
+    - name: Print AWS CLI version
+      debug:
+        msg: "AWS CLI is installed: {{ aws_cli_check.stdout }}"
