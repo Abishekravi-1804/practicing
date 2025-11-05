@@ -1,15 +1,12 @@
-
+# main.tf
 
 provider "aws" {
   region = "ap-south-1"
 }
 
 resource "aws_s3_bucket" "website_bucket" {
-  bucket = "my-unique-cicd-project-12345" # Use a globally unique name
-
-  website {
-    index_document = "index.html"
-  }
+  # Use a globally unique name
+  bucket = "my-unique-cicd-project-bucket-12345" 
 }
 
 resource "aws_s3_bucket_public_access_block" "website_bucket_pab" {
@@ -19,6 +16,15 @@ resource "aws_s3_bucket_public_access_block" "website_bucket_pab" {
   block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
+}
+
+# This new resource replaces the deprecated "website" block
+resource "aws_s3_bucket_website_configuration" "website_config" {
+  bucket = aws_s3_bucket.website_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
 }
 
 resource "aws_s3_bucket_policy" "website_bucket_policy" {
@@ -35,8 +41,14 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
       }
     ]
   })
+
+  # This is the crucial fix: It tells Terraform to wait for the public access block
+  # to be configured before trying to apply this policy.
+  depends_on = [aws_s3_bucket_public_access_block.website_bucket_pab]
 }
 
+# This output is updated to use the new website configuration resource
 output "website_url" {
-  value = aws_s3_bucket.website_bucket.website_endpoint
+  value = aws_s3_bucket_website_configuration.website_config.website_endpoint
 }
+
