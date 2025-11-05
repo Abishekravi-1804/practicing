@@ -1,5 +1,5 @@
 #!/bin/bash
-# deploy.sh
+
 
 # This script syncs the website files to the S3 bucket.
 # The bucket name is passed as the first argument ($1).
