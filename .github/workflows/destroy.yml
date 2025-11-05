@@ -30,6 +30,9 @@ jobs:
         with:
          
           terraform_wrapper: false
-          
+
+      - name: Terraform Init
+        run: terraform init
+
       - name: Terraform Destroy
         run: terraform destroy -auto-approve
