@@ -1,4 +1,4 @@
-
+# .github/workflows/deploy.yml
 
 name: Deploy Static Website to AWS S3
 
@@ -19,7 +19,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+          aws-region: ap-south-1 
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -41,5 +41,5 @@ jobs:
       - name: Deploy to S3 with Bash Script
         run: |
           chmod +x ./deploy.sh
-          BUCKET_NAME=$(terraform output -raw website_url | cut -d'/' -f1 | cut -d'.' -f1)
-          ./deploy.sh $BUCKET_NAME
+          BUCKET_NAME=$(terraform output -raw bucket_name)
+          ./deploy.sh "$BUCKET_NAME"
